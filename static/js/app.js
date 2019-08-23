@@ -19,12 +19,12 @@ function init() {
   var selector = d3.select("#selDataset");
 
   // Use the list of sample names to populate the select options
-  d3.json("/country").then((sampleNames) => {
-    sampleNames.forEach((sample) => {
+  d3.json("/country").then((country_list) => {
+    country_list.forEach((country) => {
       selector
         .append("option")
-        .text(sample)
-        .property("value", sample);
+        .text(country)
+        .property("value", country);
     })
   })
 
