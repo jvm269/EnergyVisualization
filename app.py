@@ -47,40 +47,56 @@ def index():
 @app.route("/country")
 def country():
    countries = session.query(Energy.country_or_area).all()
-   c = []
+   country_list = []
    for country in countries:
-      if country[0] not in c:
-         c.append(country[0])
+      if country[0] not in country_list:
+         country_list.append(country[0])
 
-   c.sort()
-   
-   return jsonify(c)
+   country_list.sort()
+   return jsonify(country_list)
 
-@app.route("/metadata")
-def metadata():
+@app.route("/category")
+def category():
+   categories = session.query(Energy.category).all()
+   category_list = []
+   for category in categories:
+      if category[0] not in category_list:
+         category_list.append(category[0])
+
+   category_list.sort()
+   return jsonify(category_list)
+
+@app.route("/year")
+def year():
+   years = session.query(Energy.year).all()
+   year_list = []
+   for year in years:
+      if year[0] not in year_list:
+         year_list.append(year[0])
+
+   year_list.sort(reverse=True)
+   return jsonify(year_list)
+
+@app.route("/metadata/<category>/<year>")
+def metadata(category, year):
+   year = int(year)
    sel = [
-      Energy._id,
       Energy.category,
-      Energy.commodity_transaction,
       Energy.country_or_area,
       Energy.quantity,
       Energy.unit,
       Energy.year
    ]
-   results = session.query(*sel).all()
 
-   metadata = {}
+   stmt = session.query(Energy).statement
+   df = pd.read_sql_query(stmt, session.bind)
+   df = df.loc[(df["category"]==category) & (df["year"]==year)]
+   df["country_or_area"] = df["country_or_area"].replace("Korea, Republic of", "South Korea")
+   df["country_or_area"] = df["country_or_area"].replace("Iran (Islamic Rep. of)", "Iran")
+   print(df)
+   data = df.to_json(orient="records")
 
-   for result in results:
-      metadata["id"] = result[0]
-      metadata["category"] = result[1]
-      metadata["commodity_transaction"] = result[2]
-      metadata["country_or_area"] = result[3]
-      metadata["quantity"] = result[4]
-      metadata["unit"] = result[5]
-      metadata["year"] = result[6]
-
-   return jsonify(metadata)
+   return data
 
 if __name__ == "__main__":
-   app.run()
+   app.run(debug=True)
