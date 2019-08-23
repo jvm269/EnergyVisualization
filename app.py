@@ -41,10 +41,23 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
+   print("testing")
    return render_template("index.html")
 
-@app.route("/names")
-def sample_metadata():
+@app.route("/country")
+def country():
+   countries = session.query(Energy.country_or_area).all()
+   c = []
+   for country in countries:
+      if country[0] not in c:
+         c.append(country[0])
+
+   c.sort()
+   
+   return jsonify(c)
+
+@app.route("/metadata")
+def metadata():
    sel = [
       Energy._id,
       Energy.category,
@@ -56,7 +69,18 @@ def sample_metadata():
    ]
    results = session.query(*sel).all()
 
-   return jsonify(results)
+   metadata = {}
+
+   for result in results:
+      metadata["id"] = result[0]
+      metadata["category"] = result[1]
+      metadata["commodity_transaction"] = result[2]
+      metadata["country_or_area"] = result[3]
+      metadata["quantity"] = result[4]
+      metadata["unit"] = result[5]
+      metadata["year"] = result[6]
+
+   return jsonify(metadata)
 
 if __name__ == "__main__":
-   app.run(debug=True)
+   app.run()
