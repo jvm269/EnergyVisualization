@@ -13,48 +13,57 @@
 <body>
   <div class="container">
     <div class="row">
-      <div class="col-md-12 jumbotron jumbotron-fluid text-center">
-        <h1 class="display-4">Energy Production Dashboard</h1>
+        <div class="col-md-12 jumbotron text-center" style="background-image: url(https://media.giphy.com/media/8cNat9ERyyzH8w7x9w/giphy.gif); background-size: cover; background-position: center; height: 300px;">
+        <h1 class="display-4"><font color="black"><b>Energizing the World</b></font></h1>
       </div>
     </div>
     <div class="row">
-      <div class="col-md-4">
-        <div class="well">
+      <div class="col-md-6">
+        <div class="well text-center">
           <h4>Category:</h4>
           <select id="Category" onchange="categoryChanged(this.value)"></select>
         </div>
       </div>
-      <div class="col-md-4">
-          <div class="well">
+      <div class="col-md-6">
+          <div class="well text-center">
             <h4>Year:</h4>
             <select id="Year" onchange="yearChanged(this.value)"></select>
           </div>
-      </div>
-      <div class="col-md-4">
-        <div class="well">
-          <h4>Country or Area:</h4>
-          <select id="Country" onchange="countryChanged(this.value)">
-              <option value="none">---</option>
-          </select>
-        </div>
       </div>
     </div>
   </div>
   <div class="container">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
           <div id="tooltip-container"></div>
     
-          <div id="canvas-svg"></div>
-        </div>
-        <div class="col-md-6">
-          <div id="stacked-area-svg"></div>
+          <div id="canvas-svg" style="text-align:center;"></div>
         </div>
       </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="well text-center">
+          <h4>Country or Area:</h4>
+            <select id="Country" onchange="countryChanged(this.value)">
+            <option value="none">---</option>
+            </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div id="stacked-area-svg"></div>
+      </div>
+    </div>
   </div>
 
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+  <script src="https://d3js.org/d3.v4.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.1.0/topojson.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
   <!-- API key -->

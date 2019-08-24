@@ -112,8 +112,8 @@ def metadata_country(country):
    df = pd.read_sql_query(stmt, session.bind)
    df["country_or_area"] = df["country_or_area"].str.lower()
    df = df.loc[df["country_or_area"]==country]
-   data = df.to_json(orient="records")
-   return data
+   # data = df.to_json(orient="records")
+   return df
 
 if __name__ == "__main__":
    app.run(debug=True)
