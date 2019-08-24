@@ -245,7 +245,7 @@ function buildStackedAreaChart(country) {
 //       .y0(function(d) { return y(d[0]); })
 //       .y1(function(d) { return y(d[1]); })
 //   )
-  });
+  // });
 }
 
 function init() {
