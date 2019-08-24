@@ -10,12 +10,6 @@ html {
   height: 100%;
 }
 
-#map {
-  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
-  width: 960px;
-  height: 500px;
-  position: relative;
-}
 #canvas {
 }
 #canvas-svg {

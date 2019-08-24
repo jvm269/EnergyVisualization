@@ -6,8 +6,8 @@ function buildMap(category, year) {
   d3.json("/metadata/"+category+"/"+year, (data) => {
     console.log(data)
 
-    var width = 960;
-    var height = 960;
+    var width = 500;
+    var height = 500;
 
     var COLOR_COUNTS = 9;
     
@@ -44,18 +44,6 @@ function buildMap(category, year) {
             g: parseInt(result[2], 16),
             b: parseInt(result[3], 16)
         } : null;
-    }
-    
-    function valueFormat(d) {
-      if (d > 1000000000) {
-        return Math.round(d / 1000000000 * 10) / 10 + "B";
-      } else if (d > 1000000) {
-        return Math.round(d / 1000000 * 10) / 10 + "M";
-      } else if (d > 1000) {
-        return Math.round(d / 1000 * 10) / 10 + "K";
-      } else {
-        return d;
-      }
     }
     
     var COLOR_FIRST = "#99ccff", COLOR_LAST = "#0050A1";
@@ -155,7 +143,7 @@ function buildMap(category, year) {
           html += d.properties.name;
           html += "</span>";
           html += "<span class=\"tooltip_value\">";
-          html += (valueHash[d.properties.name] ? valueFormat(valueHash[d.properties.name]) : "");
+          html += (valueHash[d.properties.name] ? valueHash[d.properties.name] : "");
           html += "";
           html += "</span>";
           html += "</div>";
@@ -184,17 +172,21 @@ function buildMap(category, year) {
               $("#tooltip-container").hide();
           });
   
-  g.append("path")
-      .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
-      .attr("class", "boundary")
-      .attr("d", path);
-  
-  svg.attr("height", height * 2.2 / 3);
-  });
+    g.append("path")
+        .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
+        .attr("class", "boundary")
+        .attr("d", path);
+    
+    svg.attr("height", height * 2.2 / 3);
+    });
 
-  d3.select(self.frameElement).style("height", (height * 2.3 / 3) + "px");
-})
+    d3.select(self.frameElement).style("height", (height * 2.3 / 3) + "px");
+  })
 };
+
+function buildLine() {
+  
+}
 
 function init() {
   // Use the list of countries or areas to populate the select options

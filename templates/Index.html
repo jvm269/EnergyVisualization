@@ -20,12 +20,6 @@
     <div class="row">
       <div class="col-md-4">
         <div class="well">
-          <h4>Country or Area:</h4>
-          <select id="Country" onchange="countryChanged(this.value)"></select>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="well">
           <h4>Category:</h4>
           <select id="Category" onchange="categoryChanged(this.value)"></select>
         </div>
@@ -36,15 +30,26 @@
             <select id="Year" onchange="yearChanged(this.value)"></select>
           </div>
       </div>
+      <div class="col-md-4">
+        <div class="well">
+          <h4>Country or Area:</h4>
+          <select id="Country" onchange="countryChanged(this.value)">
+              <option value="none">---</option>
+          </select>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <div id="tooltip-container"></div>
+  <div class="container">
+    <div class="row">
+        <div class="col-md-6">
+          <div id="tooltip-container"></div>
+    
+          <div id="canvas-svg"></div>
+        </div>
+      </div>
+  </div>
 
-      <div id="canvas-svg"></div>
-    </div>
-  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.1.0/topojson.min.js"></script>
