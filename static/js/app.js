@@ -4,8 +4,7 @@ function buildMap(category, year) {
   panel.html("");
 
   d3.json("/metadata/"+category+"/"+year, (data) => {
-    console.log(data)
-
+    // console.log(data)
     var width = 500;
     var height = 500;
 
@@ -184,8 +183,8 @@ function buildMap(category, year) {
   })
 };
 
-function buildLine() {
-  
+function buildStackedAreaChart() {
+
 }
 
 function init() {
@@ -228,6 +227,9 @@ function init() {
 
 function countryChanged(newCountry) {
   console.log(newCountry);
+  d3.json("/metadata/"+newCountry, (data) => {
+    console.log(data)
+  })
 }
 
 function categoryChanged(newCategory) {
