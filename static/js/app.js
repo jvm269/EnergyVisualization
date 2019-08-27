@@ -248,12 +248,65 @@ function buildStackedAreaChart(country) {
   // });
 }
 
+function pie_chart(country, year) {
+   var pie_selector = d3.select("#pie_chart")
+  //  pie_selector.html("")
+
+   d3.json("/pie/"+country+"/"+year, (data) => {
+     console.log(data)
+
+     var pie_value = [];
+     var pie_category = [];
+     data.forEach(d => {
+       console.log(d.quantity)
+       pie_value.push(d.quantity)
+       pie_category.push(d.category)
+     });
+     let pie_colors = [ "rgb(0,80,161)", "rgb(153,204,255)", "rgb(59,134,209)", "rgb(204, 204,204)" ]
+    let pieData = [
+      {
+
+        values: pie_value,
+        labels: pie_category,
+        hovertext: pie_value,
+        hoverinfo: "hovertext",
+       marker:{
+         colors: pie_colors
+       },
+        hole: .5,
+        // textinfo: 'none',
+        type: "pie"
+      }
+    ];
+    
+    let pieLayout = {
+      //  height: 800,
+      //   width: 800
+      legend: {"orientation": "h"}
+    };
+
+    Plotly.plot("pie_chart", pieData, pieLayout)
+})
+   }
+   
+   
+  
+
 function init() {
   // Use the list of countries or areas to populate the select options
   var selector_country = d3.select("#Country");
   d3.json("/country", (country_list) => {
     country_list.forEach((country) => {
       selector_country
+        .append("option")
+        .text(country)
+        .property("value", country);
+    })
+  })
+  var pie_selector_country = d3.select("#pie_country");
+  d3.json("/country", (country_list) => {
+    country_list.forEach((country) => {
+      pie_selector_country
         .append("option")
         .text(country)
         .property("value", country);
@@ -279,11 +332,22 @@ function init() {
         .property("value", year);
     })
   })
+ // Use the list of years to populate the select options
+ var pie_selector_year = d3.select("#pie_year");
+ d3.json("/year", (year_list) => {
+   year_list.forEach((year) => {
+     pie_selector_year
+       .append("option")
+       .text(year)
+       .property("value", year);
+   })
+ })
 
   const initCategory = "nuclear_electricity";
   const initYear = "2014";
 
   buildMap(initCategory, initYear);
+
 };
 
 function countryChanged(newCountry) {
@@ -298,7 +362,18 @@ function categoryChanged(newCategory) {
 
 function yearChanged(newYear) {
   var category = $("#Category :selected").text()
-  buildMap(category, newYear);
+  buildMap(category, newYear)
 }
+
+function pie_countryChanged(newCountry) {
+  var year = $("#pie_year :selected").text()
+  pie_chart(newCountry, year)
+}
+
+function pie_yearChanged(newYear) {
+  var country = $("#pie_country :selected").text()
+  pie_chart(country, newYear)
+}
+
 
 init();

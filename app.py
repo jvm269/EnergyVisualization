@@ -115,5 +115,23 @@ def metadata_country(country):
    # data = df.to_json(orient="records")
    return df
 
+
+@app.route("/pie/<country>/<year>")
+def pie(country, year):
+   year = int(year)
+   country = country.lower()
+   sel = [
+      Energy.category,
+      Energy.country_or_area,
+      Energy.quantity,
+   #    Energy.unit,
+      Energy.year
+   ]
+   stmt = session.query(*sel).statement
+   df = pd.read_sql_query(stmt, session.bind)
+   df["country_or_area"] = df["country_or_area"].str.lower()
+   df = df.loc[(df["country_or_area"]==country) & (df["year"]==year)]
+   data = df.to_json(orient="records")
+   return data
 if __name__ == "__main__":
    app.run(debug=True)
