@@ -140,10 +140,11 @@ function buildMap(category, year) {
           html += "<div class=\"tooltip_kv\">";
           html += "<span class=\"tooltip_key\">";
           html += d.properties.name;
+          html += ":";
           html += "</span>";
           html += "<span class=\"tooltip_value\">";
           html += (valueHash[d.properties.name] ? valueHash[d.properties.name] : "");
-          html += "";
+          html += " Kilowatt-hours, million";
           html += "</span>";
           html += "</div>";
           
@@ -230,7 +231,7 @@ svg.append("text")
     .attr("text-anchor", "end")
     .attr("x", 0)
     .attr("y", -20 )
-    .text("Quantity")
+    .text("Quantity (Kilowatt-hours, million)")
     .attr("text-anchor", "start")
 
 // Add Y axis
@@ -242,7 +243,7 @@ var allQuantity = []
 
 
 var y = d3.scaleLinear()
-  .domain([0,d3.max(allQuantity)])
+  .domain([0,d3.max(allQuantity)*1.1])
   .range([ height, 0 ]);
 svg.append("g")
   .call(d3.axisLeft(y).ticks(5))
@@ -379,7 +380,10 @@ function pie_chart(country, year) {
 
         values: pie_value,
         labels: pie_category,
-        hoverinfo: "hovertext",
+        hovertemplate:
+            "Category: %{label}<br>" +
+            "Quantity: %{value} Kilowatt-hours, million"+
+            "<extra></extra>",
        marker:{
          colors: pie_colors
        },
