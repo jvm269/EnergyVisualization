@@ -187,9 +187,9 @@ function buildMap(category, year) {
 function buildStackedAreaChart(country) {
   var stacked = d3.select("#stacked-area-svg")
   stacked.html("")
-  var margin = {top: 60, right: 230, bottom: 50, left: 100},
-  width = 660 - margin.left - margin.right,
-  height = 400 - margin.top - margin.bottom;
+  var margin = {top: 60, right: 230, bottom: 120, left: 100},
+  width = 800 - margin.left - margin.right,
+  height = 500 - margin.top - margin.bottom;
   var svg = stacked
   .append("svg")
   .attr("width", width + margin.left + margin.right)
@@ -335,7 +335,7 @@ function updateChart() {
     .data(keys)
     .enter()
     .append("rect")
-      .attr("x", 400)
+      .attr("x", 500)
       .attr("y", function(d,i){ return 10 + i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
       .attr("width", size)
       .attr("height", size)
@@ -348,7 +348,7 @@ function updateChart() {
     .data(keys)
     .enter()
     .append("text")
-      .attr("x", 400 + size*1.2)
+      .attr("x", 500 + size*1.2)
       .attr("y", function(d,i){ return 10 + i*(size+5) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
       .style("fill", function(d){ return color(d)})
       .text(function(d){ return d})
@@ -394,8 +394,8 @@ function pie_chart(country, year) {
     ];
     
     let pieLayout = {
-      //  height: 800,
-      //   width: 800
+      // height: 300,
+      // width: 800,
       legend: {"orientation": "h"}
     };
 
