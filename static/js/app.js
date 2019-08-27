@@ -273,7 +273,7 @@ function pie_chart(country, year) {
          colors: pie_colors
        },
         hole: .5,
-        textinfo: 'none',
+        // textinfo: 'none',
         type: "pie"
       }
     ];
@@ -284,7 +284,7 @@ function pie_chart(country, year) {
       legend: {"orientation": "h"}
     };
 
-    Plotly.plot("pie_chart", pieData, pieLayout)
+    Plotly.newPlot("pie_chart", pieData, pieLayout)
 })
    }
    
