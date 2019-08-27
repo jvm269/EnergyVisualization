@@ -100,6 +100,7 @@ def metadata(category, year):
 
 @app.route("/metadata/<country>")
 def metadata_country(country):
+   keys = ["nuclear_electricity", "solar_electricity", "thermal_electricity", "tide_wave_and_ocean_electricity"]
    country = country.lower()
    # sel = [
    #    Energy.category,
@@ -112,7 +113,16 @@ def metadata_country(country):
    df = pd.read_sql_query(stmt, session.bind)
    df["country_or_area"] = df["country_or_area"].str.lower()
    df = df.loc[df["country_or_area"]==country]
-   data = df.to_json(orient="records")
+   table = pd.pivot_table(df, values='quantity', index="year", columns="category", fill_value=0)
+   for key in keys:
+      if key in table.columns:
+         pass
+      else:
+         table[f"{key}"] = 0
+         
+   table["year"] = table.index
+
+   data = table.to_json(orient="records")
    return data
 
 
@@ -133,5 +143,6 @@ def pie(country, year):
    df = df.loc[(df["country_or_area"]==country) & (df["year"]==year)]
    data = df.to_json(orient="records")
    return data
+   
 if __name__ == "__main__":
    app.run(debug=True)

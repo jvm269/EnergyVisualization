@@ -186,77 +186,176 @@ function buildMap(category, year) {
 function buildStackedAreaChart(country) {
   var stacked = d3.select("#stacked-area-svg")
   stacked.html("")
-  var margin = {top: 10, right: 30, bottom: 30, left: 60};
-  var width = 460 - margin.left - margin.right;
-  var height = 400 - margin.top - margin.bottom;
-  var svg = d3.select("#stacked-area-svg")
+  var margin = {top: 60, right: 230, bottom: 50, left: 100},
+  width = 660 - margin.left - margin.right,
+  height = 400 - margin.top - margin.bottom;
+  var svg = stacked
   .append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  
+
   var myUrl = `/metadata/${country}`;
   d3.json(myUrl, (data) => {
-    var sumstat = d3.nest()
-    .key(function(d) { return +d.year;})
-    .entries(data);
-  // var myUrl = `/sample_energy/${country}`;
-  // d3.json(myUrl).then(function(response) {
-    console.log(data)
-    // response.forEach(function(datalvl) {
-    //   datalvl.poverty = +datalvl.poverty;
-    //   datalvl.age = +datalvl.age;
-    //   datalvl.smokes = +datalvl.smokes;
-    // });
-    // d3.json('/sample/${country}', (data) => {
-    // var sumstat = d3.nest()
-    // .key(function(d) { return d.year;})
-    // .entries(data);
-    // console.log(sumstat)
-    var mygroups = ["nuclear_electricity", "solar_electricity", "thermal_electricity", "tide_wave_and_ocean_electricity"];
-    var mygroup = [1,2,3,4];
+    console.log(data);
+    var keys = ["nuclear_electricity", "solar_electricity", "thermal_electricity", "tide_wave_and_ocean_electricity"]
+    var color = d3.scaleOrdinal()
+    .domain(keys)
+    .range(["rgb(204, 204,204)", "rgb(153,204,255)",  "rgb(59,134,209)", "rgb(0,80,161)"])
     var stackedData = d3.stack()
-    .keys(mygroup)
-    .value(function(d, key){
-      // console.log(d.values[key])
-      console.log(key)
-      if (`${key-1}` in d.values){
-        return +d.values[key-1].quantity
-      } else{
-        return 0 
-      }
-    })
-    (sumstat)
-    console.log(stackedData)  
-    // Add X axis --> it is a date format
+      .keys(keys)
+      (data)
+    console.log(stackedData)
+
+  // Add X axis
   var x = d3.scaleLinear()
-  .domain(d3.extent(data, function(d) { return +d.year; }))
+  .domain(d3.extent(data, function(d) { return d.year; }))
   .range([ 0, width ]);
-  svg.append("g")
-    .attr("transform", "translate(0," + height +")")
-    .call(d3.axisBottom(x));
-  // Add Y axis
-  var y = d3.scaleLinear()
-    .domain([0,1.3* d3.max(data, function(d) { return +d.quantity; })*1.2])
-    .range([ height, 0 ]);
-  svg.append("g")
-    .call(d3.axisLeft(y));
-// color palette
-var color = d3.scaleOrdinal()
-  .domain(mygroups)
-  .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
+var xAxis = svg.append("g")
+  .attr("transform", "translate(0," + height + ")")
+  .call(d3.axisBottom(x).ticks(5))
+
+// Add X axis label:
+svg.append("text")
+    .attr("text-anchor", "end")
+    .attr("x", width)
+    .attr("y", height+40 )
+    .text("Year");
+
+// Add Y axis label:
+svg.append("text")
+    .attr("text-anchor", "end")
+    .attr("x", 0)
+    .attr("y", -20 )
+    .text("Quantity")
+    .attr("text-anchor", "start")
+
+// Add Y axis
+var allQuantity = []
+
+  data.forEach((d) => {
+    allQuantity.push(+d.thermal_electricity + +d.solar_electricity + +d.nuclear_electricity + +d.tide_wave_and_ocean_electricity)
+  })
+
+
+var y = d3.scaleLinear()
+  .domain([0,d3.max(allQuantity)])
+  .range([ height, 0 ]);
+svg.append("g")
+  .call(d3.axisLeft(y).ticks(5))
+
+
+// Add a clipPath: everything out of this area won't be drawn.
+var clip = svg.append("defs").append("svg:clipPath")
+    .attr("id", "clip")
+    .append("svg:rect")
+    .attr("width", width )
+    .attr("height", height )
+    .attr("x", 0)
+    .attr("y", 0);
+
+// Add brushing
+var brush = d3.brushX()                 // Add the brush feature using the d3.brush function
+    .extent( [ [0,0], [width,height] ] ) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+    .on("end", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
+
+// Create the scatter variable: where both the circles and the brush take place
+var areaChart = svg.append('g')
+  .attr("clip-path", "url(#clip)")
+
+// Area generator
+var area = d3.area()
+  .x(function(d) { return x(d.data.year); })
+  .y0(function(d) { return y(d[0]); })
+  .y1(function(d) { return y(d[1]); })
+
 // Show the areas
-svg
+areaChart
   .selectAll("mylayers")
   .data(stackedData)
   .enter()
   .append("path")
-    .style("fill", function(d) { name = mygroups[d.key-1] ;  return color(name); })
-    .attr("d", d3.area()
-      .x(function(d, i) { return x(d.data.key); })
-      .y0(function(d) { return y(d[0]); })
-      .y1(function(d) { return y(d[1]); })
-    )
+    .attr("class", function(d) { return "myArea " + d.key })
+    .style("fill", function(d) { return color(d.key); })
+    .attr("d", area)
+
+// Add the brushing
+areaChart
+  .append("g")
+    .attr("class", "brush")
+    .call(brush);
+
+var idleTimeout
+function idled() { idleTimeout = null; }
+
+// A function that update the chart for given boundaries
+function updateChart() {
+
+  extent = d3.event.selection
+
+  // If no selection, back to initial coordinate. Otherwise, update X axis domain
+  if(!extent){
+    if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
+    x.domain(d3.extent(data, function(d) { return d.year; }))
+  }else{
+    x.domain([ x.invert(extent[0]), x.invert(extent[1]) ])
+    areaChart.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
+  }
+
+  // Update axis and area position
+  xAxis.transition().duration(1000).call(d3.axisBottom(x).ticks(5))
+  areaChart
+    .selectAll("path")
+    .transition().duration(1000)
+    .attr("d", area)
+  }
+
+  // What to do when one group is hovered
+  var highlight = function(d){
+    console.log(d)
+    // reduce opacity of all groups
+    d3.selectAll(".myArea").style("opacity", .1)
+    // expect the one that is hovered
+    d3.select("."+d).style("opacity", 1)
+  }
+
+  // And when it is not hovered anymore
+  var noHighlight = function(d){
+    d3.selectAll(".myArea").style("opacity", 1)
+  }
+
+
+  // Add one dot in the legend for each name.
+  var size = 20
+  svg.selectAll("myrect")
+    .data(keys)
+    .enter()
+    .append("rect")
+      .attr("x", 400)
+      .attr("y", function(d,i){ return 10 + i*(size+5)}) // 100 is where the first dot appears. 25 is the distance between dots
+      .attr("width", size)
+      .attr("height", size)
+      .style("fill", function(d){ return color(d)})
+      .on("mouseover", highlight)
+      .on("mouseleave", noHighlight)
+
+  // Add one dot in the legend for each name.
+  svg.selectAll("mylabels")
+    .data(keys)
+    .enter()
+    .append("text")
+      .attr("x", 400 + size*1.2)
+      .attr("y", function(d,i){ return 10 + i*(size+5) + (size/2)}) // 100 is where the first dot appears. 25 is the distance between dots
+      .style("fill", function(d){ return color(d)})
+      .text(function(d){ return d})
+      .attr("text-anchor", "left")
+      .style("alignment-baseline", "middle")
+      .on("mouseover", highlight)
+      .on("mouseleave", noHighlight)
+
   });
 }
 
@@ -265,16 +364,16 @@ function pie_chart(country, year) {
   //  pie_selector.html("")
 
    d3.json("/pie/"+country+"/"+year, (data) => {
-     console.log(data)
+    //  console.log(data)
 
      var pie_value = [];
      var pie_category = [];
      data.forEach(d => {
-       console.log(d.quantity)
+      //  console.log(d.quantity)
        pie_value.push(d.quantity)
        pie_category.push(d.category)
      });
-     let pie_colors = [ "rgb(0,80,161)", "rgb(153,204,255)", "rgb(59,134,209)", "rgb(204, 204,204)" ]
+     let pie_colors = ["rgb(0,80,161)", "rgb(153,204,255)", "rgb(59,134,209)", "rgb(204, 204,204)"]
     let pieData = [
       {
 
@@ -297,8 +396,8 @@ function pie_chart(country, year) {
     };
 
     Plotly.newPlot("pie_chart", pieData, pieLayout)
-})
-   }
+  })
+}
    
    
   
@@ -356,13 +455,15 @@ function init() {
 
   const initCategory = "nuclear_electricity";
   const initYear = "2014";
+  const initCountry = "afghanistan"
 
   buildMap(initCategory, initYear);
-
+  pie_chart(initCountry, initYear)
+  buildStackedAreaChart(initCountry)
 };
 
 function countryChanged(newCountry) {
-  console.log(newCountry);
+  // console.log(newCountry);
   buildStackedAreaChart(newCountry);
 }
 
