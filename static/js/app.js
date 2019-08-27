@@ -268,13 +268,12 @@ function pie_chart(country, year) {
 
         values: pie_value,
         labels: pie_category,
-        hovertext: pie_value,
         hoverinfo: "hovertext",
        marker:{
          colors: pie_colors
        },
         hole: .5,
-        // textinfo: 'none',
+        textinfo: 'none',
         type: "pie"
       }
     ];
