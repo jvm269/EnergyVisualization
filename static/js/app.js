@@ -187,7 +187,7 @@ function buildMap(category, year) {
 function buildStackedAreaChart(country) {
   var stacked = d3.select("#stacked-area-svg")
   stacked.html("")
-  var margin = {top: 60, right: 230, bottom: 120, left: 100},
+  var margin = {top: 60, right: 280, bottom: 120, left: 100},
   width = 850 - margin.left - margin.right,
   height = 500 - margin.top - margin.bottom;
   var svg = stacked
