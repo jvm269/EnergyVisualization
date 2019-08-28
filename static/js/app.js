@@ -246,7 +246,7 @@ var y = d3.scaleLinear()
   .domain([0,d3.max(allQuantity)*1.1])
   .range([ height, 0 ]);
 svg.append("g")
-  .call(d3.axisLeft(y).ticks(5))
+  .call(d3.axisLeft(y).ticks(10))
 
 
 // Add a clipPath: everything out of this area won't be drawn.
