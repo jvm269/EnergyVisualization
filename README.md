@@ -14,4 +14,4 @@ We used jquery to host our years and country in the dropdown field
 We used plot.ly to chart our pie graph and d3 for our geo map and stacked energy graph
 
 
-Our data can be found HERE: https://www.kaggle.com/unitednations/international-energy-statistics/activity
+Our original data can be found HERE: https://www.kaggle.com/unitednations/international-energy-statistics/activity. We used mongo to filter the data to a smaller subset.
