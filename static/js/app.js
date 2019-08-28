@@ -143,7 +143,7 @@ function buildMap(category, year) {
           html += ":";
           html += "</span>";
           html += "<span class=\"tooltip_value\">";
-          html += (valueHash[d.properties.name] ? valueHash[d.properties.name] : "");
+          html += (valueHash[d.properties.name] ? valueHash[d.properties.name] : "0");
           html += " Kilowatt-hours, million";
           html += "</span>";
           html += "</div>";
@@ -188,7 +188,7 @@ function buildStackedAreaChart(country) {
   var stacked = d3.select("#stacked-area-svg")
   stacked.html("")
   var margin = {top: 60, right: 230, bottom: 120, left: 100},
-  width = 800 - margin.left - margin.right,
+  width = 850 - margin.left - margin.right,
   height = 500 - margin.top - margin.bottom;
   var svg = stacked
   .append("svg")
@@ -201,7 +201,7 @@ function buildStackedAreaChart(country) {
 
   var myUrl = `/metadata/${country}`;
   d3.json(myUrl, (data) => {
-    console.log(data);
+    // console.log(data);
     var keys = ["nuclear_electricity", "solar_electricity", "thermal_electricity", "tide_wave_and_ocean_electricity"]
     var color = d3.scaleOrdinal()
     .domain(keys)
@@ -209,7 +209,7 @@ function buildStackedAreaChart(country) {
     var stackedData = d3.stack()
       .keys(keys)
       (data)
-    console.log(stackedData)
+    // console.log(stackedData)
 
   // Add X axis
   var x = d3.scaleLinear()
@@ -316,7 +316,7 @@ function updateChart() {
 
   // What to do when one group is hovered
   var highlight = function(d){
-    console.log(d)
+    // console.log(d)
     // reduce opacity of all groups
     d3.selectAll(".myArea").style("opacity", .1)
     // expect the one that is hovered
@@ -374,7 +374,7 @@ function pie_chart(country, year) {
        pie_value.push(d.quantity)
        pie_category.push(d.category)
      });
-     let pie_colors = ["rgb(0,80,161)", "rgb(153,204,255)", "rgb(59,134,209)", "rgb(204, 204,204)"]
+     let pie_colors = ["rgb(0,80,161)",  "rgb(59,134,209)", "rgb(153,204,255)", "rgb(204, 204,204)"]
     let pieData = [
       {
 
