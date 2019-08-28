@@ -1,5 +1,5 @@
-# EnergyVisualization
-
+# EnergyVisualization Dashboard
+# Project By: Gan Jin, Peter Kim, Kevin Freehill, and Jihan M. 
 
 Visualization Dashboard from the United Nations Energy Information detailing the usage of energy for each year. 
 We used heroku to host our database from a csv file. It included over 7000's records. Our Dashboard included a total of 3 user driven visualizations.
