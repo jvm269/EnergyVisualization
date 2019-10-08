@@ -19,4 +19,6 @@ We used plot.ly to chart our pie graph and d3 for our geo map and stacked energy
 
 Our original data can be found HERE: https://www.kaggle.com/unitednations/international-energy-statistics/activity. We used mongo to filter the data to a smaller subset.
 
+
+Here is the screen of the dashboard:
 ![Screenshot](https://github.com/jvm269/EnergyVisualization/blob/master/image/localhost_5000_.png)
